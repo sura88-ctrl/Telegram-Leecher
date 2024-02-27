@@ -156,9 +156,11 @@ async def on_output(output: str):
     elif Aria2c.link_info:
         source = "Aria2c 🧨"
 
-    # Calculate download speed
+if elapsed_time_seconds != 0:
     current_speed = (float(down) * 1024 ** spd) / elapsed_time_seconds
     speed_string = f"{sizeUnit(current_speed)}/s"
+else:
+    speed_string = "Calculating speed..."  # Or any other appropriate message
 
     # If source is still None, set it to a generic message
     if source is None:
