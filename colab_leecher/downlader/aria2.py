@@ -5,12 +5,12 @@ import subprocess
 import libtorrent as lt
 from datetime import datetime
 from colab_leecher.utility.helper import sizeUnit, status_bar
-from colab_leecher.utility.variables import BOT, Aria2c, Paths, Messages, BotTimes
+from colab_leecher.utility.variables import BOT, Aria2c, Libtorrent, Paths, Messages, BotTimes
 
 
-async def libtorrent_Download(link: str, num: int):
+async def libtorrent_download(link: str, num: int):
     global BotTimes, Messages
-    name_d = await get_Aria2c_Name(link)
+    name_d = await get_Libtorrent_Name(link)
     BotTimes.task_start = datetime.now()
     Messages.status_head = f"<b>📥 DOWNLOADING FROM » </b><i>🔗Link {str(num).zfill(2)}</i>\n\n<b>🏷️ Name » </b><code>{name_d}</code>\n"
     
@@ -56,10 +56,10 @@ async def libtorrent_Download(link: str, num: int):
     except Exception as e:
         logging.error(f"libtorrent download failed: {e}")
         logging.info("Switching to aria2...")
-        await aria2_Download(link, num)
+        await aria2_download(link, num)
 
 
-async def aria2_Download(link: str, num: int):
+async def aria2_download(link: str, num: int):
     global BotTimes, Messages
     name_d = await get_Aria2c_Name(link)
     BotTimes.task_start = datetime.now()
@@ -165,8 +165,24 @@ async def get_Aria2c_Name(link):
     cmd = f'aria2c -x10 --dry-run --file-allocation=none "{link}"'
     result = subprocess.run(cmd, stdout=subprocess.PIPE, shell=True)
     stdout_str = result.stdout.decode("utf-8")
-    filename = stdout_str.split("complete: ")[-1].split("\n")[0]
-    name = filename.split("/")[-1]
-    if len(name) == 0:
+    try:
+        filename = stdout_str.split("complete: ")[-1].split("\n")[0]
+        name = filename.split("/")[-1]
+    except IndexError:
         name = "UNKNOWN DOWNLOAD NAME"
     return name
+
+async def get_Libtorrent_Name(link):
+    # Implement logic to extract name from the magnet link or torrent file
+    pass
+
+async def status_bar(*args, **kwargs):
+    # Implement logic to update status bar
+    pass
+
+async def sizeUnit(size):
+    # Implement logic to convert size to human-readable format
+    pass
+
+# Define your Paths, Messages, BOT, Aria2c, Libtorrent, and BotTimes objects
+# Make sure to replace the placeholders with your actual implementations
