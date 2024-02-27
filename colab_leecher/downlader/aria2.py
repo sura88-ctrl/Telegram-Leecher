@@ -120,8 +120,6 @@ async def on_output(output: str):
     progress_percentage = "0B"
     downloaded_bytes = "0B"
     eta = "0S"
-    source = None  # Initialize source to None
-
     try:
         if "ETA:" in output:
             parts = output.split()
@@ -150,32 +148,26 @@ async def on_output(output: str):
     if elapsed_time_seconds >= 270 and not (Libtorrent.link_info or Aria2c.link_info):
         logging.error("Failed to get download information! Probably a dead link 💀")
 
-    # Check for source
-    if Libtorrent.link_info:
-        source = "Libtorrent 🌩️"
-    elif Aria2c.link_info:
-        source = "Aria2c 🧨"
+    # Only Do this if got Information
+    if total_size != "0B":
+        if Libtorrent.link_info:
+            source = "Libtorrent 🌩️"
+        elif Aria2c.link_info:
+            source = "Aria2c 🧨"
 
-    # Calculate download speed
-    if elapsed_time_seconds != 0:  # Avoid division by zero
+        # Calculate download speed
         current_speed = (float(down) * 1024 ** spd) / elapsed_time_seconds
         speed_string = f"{sizeUnit(current_speed)}/s"
-    else:
-        speed_string = "Calculating speed..."  # Or any other appropriate message
 
-    # If source is still None, set it to a generic message
-    if source is None:
-        source = "Engine information not available"
-
-    await status_bar(
-        Messages.status_head,
-        speed_string,
-        int(percentage),
-        eta,
-        downloaded_bytes,
-        total_size,
-        source,
-    )
+        await status_bar(
+            Messages.status_head,
+            speed_string,
+            int(percentage),
+            eta,
+            downloaded_bytes,
+            total_size,
+            source,
+        )
 
 
 async def get_Libtorrent_Name(link):
@@ -187,21 +179,19 @@ async def get_Libtorrent_Name(link):
         await asyncio.sleep(1)
     torrent_info = handle.get_torrent_info()
     name = torrent_info.name()
-    if len(name) == 0:       
-    name = "UNKNOWN DOWNLOAD NAME"
+    if len(name) == 0:
+        name = "UNKNOWN DOWNLOAD NAME"
     return name
-
+    
 
 async def get_Aria2c_Name(link):
     if len(BOT.Options.custom_name) != 0:
         return BOT.Options.custom_name
     cmd = f'aria2c -x10 --dry-run --file-allocation=none "{link}"'
     result = subprocess.run(cmd, stdout=subprocess.PIPE, shell=True)
-    stdout_str = result.stdout.decode("utf-8")
+    stdout_str = result.stdout.decode("utf")
     filename = stdout_str.split("complete: ")[-1].split("\n")[0]
     name = filename.split("/")[-1]
     if len(name) == 0:
         name = "UNKNOWN DOWNLOAD NAME"
     return name
-    
-# Your other functions and code continue from here...
