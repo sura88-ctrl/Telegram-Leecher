@@ -56,10 +56,10 @@ async def libtorrent_download(link: str, num: int):
     except Exception as e:
         logging.error(f"libtorrent download failed: {e}")
         logging.info("Switching to aria2...")
-        await aria2_download(link, num)
+        await aria2_Download(link, num)
 
 
-async def aria2_download(link: str, num: int):
+async def aria2_Download(link: str, num: int):
     global BotTimes, Messages
     name_d = await get_Aria2c_Name(link)
     BotTimes.task_start = datetime.now()
