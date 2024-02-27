@@ -59,7 +59,7 @@ async def downloadManager(sources, is_ytdl: bool):
                     executor = ProcessPoolExecutor()
                     await megadl(link, i + 1)
                 else:
-                    aria2_dn = f"<b>PLEASE WAIT ⌛</b>\n\n__Getting Download Info For__\n\n<code>{link}</code>"
+                    libtorrent_dn = f"<b>PLEASE WAIT ⌛</b>\n\n__Getting Download Info For__\n\n<code>{link}</code>"
                     try:
                         await MSG.status_msg.edit_text(
                             text=libtorrent_dn + sysINFO(), reply_markup=keyboard()
