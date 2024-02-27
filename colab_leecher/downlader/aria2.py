@@ -120,7 +120,7 @@ async def on_output(output: str):
     progress_percentage = "0B"
     downloaded_bytes = "0B"
     eta = "0S"
-    source = "Unknown"  # Default value for source
+    source = None  # Initialize source to None
 
     try:
         if "ETA:" in output:
@@ -131,7 +131,7 @@ async def on_output(output: str):
             downloaded_bytes = parts[1].split("/")[0]
             eta = parts[4].split(":")[1][:-1]
     except Exception as do:
-        logging.error(f"Could't Get Info Due to: {do}")
+        logging.error(f"Couldn't Get Info Due to: {do}")
 
     percentage = re.findall("\d+\.\d+|\d+", progress_percentage)[0]  # type: ignore
     down = re.findall("\d+\.\d+|\d+", downloaded_bytes)[0]  # type: ignore
@@ -150,26 +150,29 @@ async def on_output(output: str):
     if elapsed_time_seconds >= 270 and not (Libtorrent.link_info or Aria2c.link_info):
         logging.error("Failed to get download information! Probably a dead link 💀")
 
-    # Only Do this if got Information
-    if total_size != "0B":
-        if Libtorrent.link_info:
-            source = "Libtorrent 🌩️"
-        elif Aria2c.link_info:
-            source = "Aria2c 🧨"
+    # Check for source
+    if Libtorrent.link_info:
+        source = "Libtorrent 🌩️"
+    elif Aria2c.link_info:
+        source = "Aria2c 🧨"
 
-        # Calculate download speed
-        current_speed = (float(down) * 1024 ** spd) / elapsed_time_seconds
-        speed_string = f"{sizeUnit(current_speed)}/s"
+    # Calculate download speed
+    current_speed = (float(down) * 1024 ** spd) / elapsed_time_seconds
+    speed_string = f"{sizeUnit(current_speed)}/s"
 
-        await status_bar(
-            Messages.status_head,
-            speed_string,
-            int(percentage),
-            eta,
-            downloaded_bytes,
-            total_size,
-            source,
-        )
+    # If source is still None, set it to a generic message
+    if source is None:
+        source = "Engine information not available"
+
+    await status_bar(
+        Messages.status_head,
+        speed_string,
+        int(percentage),
+        eta,
+        downloaded_bytes,
+        total_size,
+        source,
+    )
 
 async def get_Libtorrent_Name(link):
     if len(BOT.Options.custom_name) != 0:
