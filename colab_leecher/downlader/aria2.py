@@ -17,11 +17,17 @@ async def libtorrent_Download(link: str, num: int):
     try:
         ses = lt.session()
         ses.listen_on(6881, 6891)
-        handle = lt.add_magnet_uri(ses, link, {"save_path": Paths.down_path})
-        BotTimes.task_start = datetime.now()
+
+        params = {"save_path": Paths.down_path}
+        handle = lt.add_magnet_uri(ses, link, params)
+
+        if not handle.is_valid():
+            logging.error("Invalid magnet URI.")
+            raise Exception("Invalid magnet URI.")
 
         while not handle.has_metadata():
             await asyncio.sleep(1)
+
         torrent_info = handle.get_torrent_info()
         name = torrent_info.name()
 
