@@ -120,6 +120,8 @@ async def on_output(output: str):
     progress_percentage = "0B"
     downloaded_bytes = "0B"
     eta = "0S"
+    source = "Unknown"  # Default value for source
+
     try:
         if "ETA:" in output:
             parts = output.split()
