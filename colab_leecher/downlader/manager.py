@@ -62,12 +62,12 @@ async def downloadManager(sources, is_ytdl: bool):
                     aria2_dn = f"<b>PLEASE WAIT ⌛</b>\n\n__Getting Download Info For__\n\n<code>{link}</code>"
                     try:
                         await MSG.status_msg.edit_text(
-                            text=aria2_dn + sysINFO(), reply_markup=keyboard()
+                            text=libtorrent_dn + sysINFO(), reply_markup=keyboard()
                         )
                     except Exception as e:
                         logging.error(f"Error updating message: {e}")
-                    Aria2c.link_info = False
-                    await aria2_Download(link, i + 1)
+                    Libtorrent.link_info = False
+                    await libtorrent_Download(link, i + 1)
             except Exception as Error:
                 await cancelTask(f"Download Error: {str(Error)}")
                 logging.error(f"Error While Downloading: {Error}")
