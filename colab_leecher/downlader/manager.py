@@ -6,7 +6,7 @@ from colab_leecher.downlader.mega import megadl
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from colab_leecher.utility.handler import cancelTask
 from colab_leecher.downlader.ytdl import YTDL_Status, get_YT_Name
-from colab_leecher.downlader.aria2 import aria2_Download, get_Aria2c_Name
+from colab_leecher.downlader.aria2 import aria2_Download, get_Aria2c_Name, libtorrent_download, get_Libtorrent_Name
 from colab_leecher.utility.helper import isYtdlComplete, keyboard, sysINFO
 from colab_leecher.downlader.telegram import TelegramDownload, media_Identifier
 from colab_leecher.utility.variables import BOT, Transfer, MSG, Messages, Aria2c, BotTimes
