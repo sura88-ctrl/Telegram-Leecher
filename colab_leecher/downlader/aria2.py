@@ -8,7 +8,7 @@ from colab_leecher.utility.helper import sizeUnit, status_bar
 from colab_leecher.utility.variables import BOT, Aria2c, Paths, Messages, BotTimes
 
 
-async def aria2_download(link: str, num: int):
+async def aria2_Download(link: str, num: int):
     global BotTimes, Messages
     name_d = get_Aria2c_Name(link)
     BotTimes.task_start = datetime.now()
