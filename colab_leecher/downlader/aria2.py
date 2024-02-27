@@ -131,7 +131,7 @@ async def on_output(output: str):
             downloaded_bytes = parts[1].split("/")[0]
             eta = parts[4].split(":")[1][:-1]
     except Exception as do:
-        logging.error(f"Couldn't Get Info Due to: {do}")
+        logging.error(f"Could't Get Info Due to: {do}")
 
     percentage = re.findall("\d+\.\d+|\d+", progress_percentage)[0]  # type: ignore
     down = re.findall("\d+\.\d+|\d+", downloaded_bytes)[0]  # type: ignore
@@ -156,11 +156,12 @@ async def on_output(output: str):
     elif Aria2c.link_info:
         source = "Aria2c 🧨"
 
-if elapsed_time_seconds != 0:
-    current_speed = (float(down) * 1024 ** spd) / elapsed_time_seconds
-    speed_string = f"{sizeUnit(current_speed)}/s"
-else:
-    speed_string = "Calculating speed..."  # Or any other appropriate message
+    # Calculate download speed
+    if elapsed_time_seconds != 0:  # Avoid division by zero
+        current_speed = (float(down) * 1024 ** spd) / elapsed_time_seconds
+        speed_string = f"{sizeUnit(current_speed)}/s"
+    else:
+        speed_string = "Calculating speed..."  # Or any other appropriate message
 
     # If source is still None, set it to a generic message
     if source is None:
@@ -176,6 +177,7 @@ else:
         source,
     )
 
+
 async def get_Libtorrent_Name(link):
     if len(BOT.Options.custom_name) != 0:
         return BOT.Options.custom_name
@@ -185,17 +187,14 @@ async def get_Libtorrent_Name(link):
         await asyncio.sleep(1)
     torrent_info = handle.get_torrent_info()
     name = torrent_info.name()
-    if len(name) == 0:
-        name = "UNKNOWN DOWNLOAD NAME"
+    if len(name) == 0:       
+    name = "UNKNOWN DOWNLOAD NAME"
     return name
-    
+
 
 async def get_Aria2c_Name(link):
     if len(BOT.Options.custom_name) != 0:
         return BOT.Options.custom_name
-    cmd = f'aria2c -x10 --dry-run --file-allocation=none "{link}"'
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, shell=True)
-    stdout_str = result.stdout.decode("utf-8")
     cmd = f'aria2c -x10 --dry-run --file-allocation=none "{link}"'
     result = subprocess.run(cmd, stdout=subprocess.PIPE, shell=True)
     stdout_str = result.stdout.decode("utf-8")
@@ -204,3 +203,5 @@ async def get_Aria2c_Name(link):
     if len(name) == 0:
         name = "UNKNOWN DOWNLOAD NAME"
     return name
+    
+# Your other functions and code continue from here...
