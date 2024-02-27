@@ -173,7 +173,6 @@ async def get_Aria2c_Name(link):
     return name
 
 async def get_Libtorrent_Name(link):
-async def get_Libtorrent_Name(link):
     # Implement logic to extract name from the magnet link or torrent file
     if link.startswith('magnet:'):
         parts = link.split('&')
