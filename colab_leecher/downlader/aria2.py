@@ -4,12 +4,12 @@ import logging
 import libtorrent as lt
 from datetime import datetime
 from colab_leecher.utility.helper import sizeUnit, status_bar
-from colab_leecher.utility.variables import BOT, Libtorrent, Paths, Messages, BotTimes
+from colab_leecher.utility.variables import BOT, Aria2c, Paths, Messages, BotTimes
 
 
-async def libtorrent_Download(link: str, num: int):
+async def aria2c_Download(link: str, num: int):
     global BotTimes, Messages
-    name_d = await get_Libtorrent_Name(link)
+    name_d = await get_Aria2c_Name(link)
     BotTimes.task_start = datetime.now()
     Messages.status_head = f"<b>📥 DOWNLOADING FROM » </b><i>🔗Link {str(num).zfill(2)}</i>\n\n<b>🏷️ Name » </b><code>{name_d}</code>\n"
     
@@ -58,13 +58,8 @@ async def libtorrent_Download(link: str, num: int):
             # Update UI or log progress
             await asyncio.sleep(1)
 
-    except Exception as e:
-        logging.error(f"libtorrent download failed: {e}")
-        logging.info("Switching to aria2...")
-        # Call another function or handle the failure scenario here
 
-
-async def get_Libtorrent_Name(link):
+async def get_Aria2c_Name(link):
     if len(BOT.Options.custom_name) != 0:
         return BOT.Options.custom_name
     ses = lt.session()
