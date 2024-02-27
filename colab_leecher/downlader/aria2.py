@@ -5,12 +5,12 @@ import subprocess
 import libtorrent as lt
 from datetime import datetime
 from colab_leecher.utility.helper import sizeUnit, status_bar
-from colab_leecher.utility.variables import BOT, Aria2c, Paths, Messages, BotTimes
+from colab_leecher.utility.variables import BOT, Aria2c, Libtorrent, Paths, Messages, BotTimes
 
 
 async def libtorrent_Download(link: str, num: int):
     global BotTimes, Messages
-    name_d = await get_Aria2c_Name(link)
+    name_d = await get_Libtorrent_Name(link)
     BotTimes.task_start = datetime.now()
     Messages.status_head = f"<b>📥 DOWNLOADING FROM » </b><i>🔗Link {str(num).zfill(2)}</i>\n\n<b>🏷️ Name » </b><code>{name_d}</code>\n"
     
@@ -41,7 +41,7 @@ async def libtorrent_Download(link: str, num: int):
             current_speed = s.download_rate
             eta = s.time_left
             downloaded_bytes = s.total_download
-            total_size = total
+            total_size = torrent_info.total_size()  # Corrected
             elapsed_time_seconds = (datetime.now() - BotTimes.task_start).seconds
             percentage = progress_percentage
 
@@ -145,13 +145,18 @@ async def on_output(output: str):
 
     elapsed_time_seconds = (datetime.now() - BotTimes.task_start).seconds
 
-    if elapsed_time_seconds >= 270 and not Aria2c.link_info:
-        logging.error("Failed to get download information ! Probably dead link 💀")
+    if elapsed_time_seconds >= 270 and not (Libtorrent.link_info or Aria2c.link_info):
+        logging.error("Failed to get download information! Probably a dead link 💀")
+
     # Only Do this if got Information
     if total_size != "0B":
+        if Libtorrent.link_info:
+            source = "Libtorrent 🌩️"
+        elif Aria2c.link_info:
+            source = "Aria2c 🧨"
+
         # Calculate download speed
-        Aria2c.link_info = True
-        current_speed = (float(down) * 1024**spd) / elapsed_time_seconds
+        current_speed = (float(down) * 1024 ** spd) / elapsed_time_seconds
         speed_string = f"{sizeUnit(current_speed)}/s"
 
         await status_bar(
@@ -161,13 +166,30 @@ async def on_output(output: str):
             eta,
             downloaded_bytes,
             total_size,
-            "Aria2c 🧨",
+            source,
         )
 
+
+async def get_Libtorrent_Name(link):
+    if len(BOT.Options.custom_name) != 0:
+        return BOT.Options.custom_name
+    ses = lt.session()
+    handle = lt.add_magnet_uri(ses, link, {})
+    while not handle.has_metadata():
+        await asyncio.sleep(1)
+    torrent_info = handle.get_torrent_info()
+    name = torrent_info.name()
+    if len(name) == 0:
+        name = "UNKNOWN DOWNLOAD NAME"
+    return name
+    
 
 async def get_Aria2c_Name(link):
     if len(BOT.Options.custom_name) != 0:
         return BOT.Options.custom_name
+    cmd = f'aria2c -x10 --dry-run --file-allocation=none "{link}"'
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, shell=True)
+    stdout_str = result.stdout.decode("utf-8")
     cmd = f'aria2c -x10 --dry-run --file-allocation=none "{link}"'
     result = subprocess.run(cmd, stdout=subprocess.PIPE, shell=True)
     stdout_str = result.stdout.decode("utf-8")
