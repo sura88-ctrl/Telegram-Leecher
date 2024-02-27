@@ -68,15 +68,28 @@ async def on_download_progress(status):
     current_speed = status.download_rate
     speed_string = f"{sizeUnit(current_speed)}/s"
 
+    # Convert total size and downloaded bytes to human-readable format
+    total_size_hr = sizeUnit(total_size)
+    downloaded_bytes_hr = sizeUnit(downloaded_bytes)
+
     await status_bar(
         Messages.status_head,
         speed_string,
         int(progress_percentage),
         eta,
-        str(downloaded_bytes),
-        str(total_size),
-        "LIB 🧨",
+        downloaded_bytes_hr,
+        total_size_hr,
+        "LIBTORRENT 🧨",
     )
+
+
+def sizeUnit(size):
+    units = ["B", "KB", "MB", "GB", "TB"]
+    unit_index = 0
+    while size >= 1024 and unit_index < len(units) - 1:
+        size /= 1024
+        unit_index += 1
+    return f"{size:.2f} {units[unit_index]}"
 
 
 async def on_download_complete():
