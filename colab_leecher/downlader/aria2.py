@@ -1,3 +1,5 @@
+# copyright 2024 © KavinduAJ | https://github.com/kjeymax
+
 import logging
 import re
 import asyncio
@@ -41,7 +43,7 @@ async def aria2_Download(link: str, num: int):
         await asyncio.sleep(1)
 
     await on_download_complete()
-    logging.info("Download complete")
+    logging.info("Stay Tuned ⌛️")
 
 
 async def get_Aria2c_Name(link):
@@ -53,11 +55,11 @@ async def get_Aria2c_Name(link):
         return info.name()
     except Exception as e:
         logging.error(f"Failed to fetch torrent name: {e}")
-        return "UNKNOWN DOWNLOAD NAME"
+        return "Unkown Download Name 🤷‍♂️"
 
 
 async def on_download_started():
-    logging.info("Download started")
+    logging.info("Download started 😀")
 
 
 async def on_download_progress(status):
@@ -79,7 +81,7 @@ async def on_download_progress(status):
         eta,
         downloaded_bytes_hr,
         total_size_hr,
-        "LIBTORRENT 🧨",
+        "LIBT 🧲",
     )
 
 
@@ -93,5 +95,5 @@ def sizeUnit(size):
 
 
 async def on_download_complete():
-    logging.info("Download complete")
+    logging.info("Download complete ✅")
     # Add any additional actions you want to perform after download completion here
