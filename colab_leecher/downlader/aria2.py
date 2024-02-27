@@ -10,7 +10,7 @@ from colab_leecher.utility.variables import BOT, Aria2c, Paths, Messages, BotTim
 
 async def aria2_download(link: str, num: int):
     global BotTimes, Messages
-    name_d = get_aria2c_Name(link)
+    name_d = get_Aria2c_Name(link)
     BotTimes.task_start = datetime.now()
     Messages.status_head = (
         f"<b>📥 DOWNLOADING FROM » </b><i>🔗Link {str(num).zfill(2)}</i>\n\n"
@@ -35,7 +35,7 @@ async def aria2_download(link: str, num: int):
     logging.info("Download complete")
 
 
-def get_aria2c_Name(link):
+def get_Aria2c_Name(link):
     if len(BOT.Options.custom_name) != 0:
         return BOT.Options.custom_name
     # You might need to adjust this part based on libtorrent's API for fetching the name
