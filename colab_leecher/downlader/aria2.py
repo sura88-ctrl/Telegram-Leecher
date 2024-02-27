@@ -5,12 +5,12 @@ import subprocess
 import libtorrent as lt
 from datetime import datetime
 from colab_leecher.utility.helper import sizeUnit, status_bar
-from colab_leecher.utility.variables import BOT, Aria2c, Libtorrent, Paths, Messages, BotTimes
+from colab_leecher.utility.variables import BOT, Aria2c, Paths, Messages, BotTimes
 
 
 async def libtorrent_download(link: str, num: int):
     global BotTimes, Messages
-    name_d = await get_Libtorrent_Name(link)
+    name_d = await get_Aria2c_Name(link)
     BotTimes.task_start = datetime.now()
     Messages.status_head = f"<b>📥 DOWNLOADING FROM » </b><i>🔗Link {str(num).zfill(2)}</i>\n\n<b>🏷️ Name » </b><code>{name_d}</code>\n"
     
@@ -39,7 +39,7 @@ async def libtorrent_download(link: str, num: int):
             elapsed_time_seconds = (datetime.now() - BotTimes.task_start).seconds
             percentage = progress_percentage
 
-            speed_string = f"{sizeUnit(current_speed)}/s"
+            speed_string = f"{await sizeUnit(current_speed)}/s"
             await status_bar(
                 Messages.status_head,
                 speed_string,
@@ -173,16 +173,40 @@ async def get_Aria2c_Name(link):
     return name
 
 async def get_Libtorrent_Name(link):
+async def get_Libtorrent_Name(link):
     # Implement logic to extract name from the magnet link or torrent file
+    if link.startswith('magnet:'):
+        parts = link.split('&')
+        for part in parts:
+            if part.startswith('dn='):
+                return part[3:]
+        return "UNKNOWN"
+    else:
+        try:
+            info = lt.torrent_info(link)
+            return info.name()
+        except Exception as e:
+        logging.error(f"Failed to extract name from torrent file: {e}")
+        return "UNKNOWN"
+
     pass
 
-async def status_bar(*args, **kwargs):
-    # Implement logic to update status bar
+async def status_bar(head_message, speed, percentage, eta, downloaded_bytes, total_size, source):
+    status_message = (
+        f"{head_message}\n"
+        f"🚀 Speed: {speed}\n"
+        f"⏳ Progress: {percentage}%\n"
+        f"⏳ ETA: {eta}\n"
+        f"📥 Downloaded: {downloaded_bytes}/{total_size}\n"
+        f"🔌 Source: {source}"
+    )
+    print(status_message)  # You can replace this with your UI update logic or logging
+
     pass
 
 async def sizeUnit(size):
-    # Implement logic to convert size to human-readable format
-    pass
-
-# Define your Paths, Messages, BOT, Aria2c, Libtorrent, and BotTimes objects
-# Make sure to replace the placeholders with your actual implementations
+    units = ['B', 'KB', 'MB', 'GB', 'TB']
+    unit_index = 0
+    while size >= 1024 and unit_index < len(units) - 1:
+        size /= 1024
+       
