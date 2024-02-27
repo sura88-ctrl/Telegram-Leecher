@@ -7,7 +7,7 @@ import logging
 from time import time
 from datetime import datetime
 from os import makedirs, path as ospath, system
-from colab_leecher.downloader import ytdl
+from colab_leecher.downlader import ytdl
 from colab_leecher import OWNER, colab_bot, DUMP_ID
 from colab_leecher.downlader.manager import calDownSize, get_d_name, downloadManager
 from colab_leecher.utility.helper import getSize, applyCustomName, keyboard, sysINFO
