@@ -7,6 +7,7 @@ import logging
 from time import time
 from datetime import datetime
 from os import makedirs, path as ospath, system
+from colab_leecher.downloader import ytdl
 from colab_leecher import OWNER, colab_bot, DUMP_ID
 from colab_leecher.downlader.manager import calDownSize, get_d_name, downloadManager
 from colab_leecher.utility.helper import getSize, applyCustomName, keyboard, sysINFO
@@ -101,7 +102,7 @@ async def taskScheduler():
     Messages.link_p = str(DUMP_ID)[4:]
 
     try:
-        system(f"aria2c -d {Paths.WORK_PATH} -o Hero.jpg {Libtorrent.pic_dwn_url}")
+        system(f"ytdl {Paths.WORK_PATH} -o Hero.jpg {Libtorrent.pic_dwn_url}")
     except Exception:
         Paths.HERO_IMAGE = Paths.DEFAULT_HERO
 
