@@ -146,7 +146,7 @@ async def on_output(output: str):
         # Calculate download speed
         Aria2c.link_info = True
         current_speed = (float(down) * 1024**spd) / elapsed_time_seconds
-        speed_string = f"{sizeUnit(current_speed)}/s"
+        speed_string = f"{await sizeUnit(current_speed)}/s"
 
         await status_bar(
             Messages.status_head,
