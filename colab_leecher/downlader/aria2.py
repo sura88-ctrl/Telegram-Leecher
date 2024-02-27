@@ -1,5 +1,6 @@
 import logging
 import re
+import asyncio
 from datetime import datetime
 
 import libtorrent as lt
@@ -10,7 +11,7 @@ from colab_leecher.utility.variables import BOT, Aria2c, Paths, Messages, BotTim
 
 async def aria2_Download(link: str, num: int):
     global BotTimes, Messages
-    name_d = get_Aria2c_Name(link)
+    name_d = await get_Aria2c_Name(link)
     BotTimes.task_start = datetime.now()
     Messages.status_head = (
         f"<b>📥 DOWNLOADING FROM » </b><i>🔗Link {str(num).zfill(2)}</i>\n\n"
@@ -36,15 +37,23 @@ async def aria2_Download(link: str, num: int):
     while not handle.is_seed():
         await on_download_progress(handle.status())
 
+        # Allow other tasks to run (prevents blocking the event loop)
+        await asyncio.sleep(1)
+
     await on_download_complete()
     logging.info("Download complete")
 
 
-def get_Aria2c_Name(link):
+async def get_Aria2c_Name(link):
     if len(BOT.Options.custom_name) != 0:
         return BOT.Options.custom_name
-    # You might need to adjust this part based on libtorrent's API for fetching the name
-    return "UNKNOWN DOWNLOAD NAME"
+    
+    try:
+        info = lt.torrent_info(link)
+        return info.name()
+    except Exception as e:
+        logging.error(f"Failed to fetch torrent name: {e}")
+        return "UNKNOWN DOWNLOAD NAME"
 
 
 async def on_download_started():
@@ -66,7 +75,7 @@ async def on_download_progress(status):
         eta,
         str(downloaded_bytes),
         str(total_size),
-        "Aria2c 🧨",
+        "LIB 🧨",
     )
 
 
