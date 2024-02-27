@@ -100,11 +100,6 @@ class MSG:
     status_msg = Message(id=2)
 
 
-
-class Aria2c:
-    link_info = False
-    pic_dwn_url = "https://picsum.photos/900/600"
-
 class Libtorrent:
     link_info = False
     pic_dwn_url = "https://picsum.photos/900/600"
