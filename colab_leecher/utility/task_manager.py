@@ -23,7 +23,7 @@ from colab_leecher.utility.variables import (
     BotTimes,
     Messages,
     Paths,
-    Aria2c,
+    Libtorrent,
     Transfer,
     TaskError,
 )
