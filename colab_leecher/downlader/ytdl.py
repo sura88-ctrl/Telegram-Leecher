@@ -99,7 +99,6 @@ def YouTubeDL(url):
         "writethumbnail": True,
         "allow_playlist_files": True,
         "overwrites": True,
-        'ignoreerrors': 'true',
         "--concurrent-fragments": 4 , # Set the maximum number of concurrent fragments
         "postprocessors": [{"key": "FFmpegVideoConvertor", "preferedformat": "mp4"}],
         "progress_hooks": [my_hook],
