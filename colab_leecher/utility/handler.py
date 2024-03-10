@@ -246,7 +246,7 @@ async def SendLogs(is_leech: bool):
     )
 
     last_text = (
-        f"\n\n<b>#{(BOT.Mode.mode).upper()}_COMPLETE 🔥</b>\n\n"
+        f"\n\n<b>UPLOAD COMPLETE ✅</b>\n\n"
         + f"╭<b>📛 Name » </b><code>{Messages.download_name}</code>\n"
         + f"├<b>📦 Size » </b><code>{size}</code>\n"
         + file_count
