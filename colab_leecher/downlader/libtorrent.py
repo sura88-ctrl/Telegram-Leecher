@@ -25,8 +25,15 @@ async def libtorrent_Download(link: str, num: int):
     params = {
         "save_path": Paths.down_path,
         "storage_mode": lt.storage_mode_t.storage_mode_sparse,
-        "url": link,
     }
+
+    if link.startswith("magnet:"):
+        params["url"] = link
+    elif link.startswith(("http://", "https://")):
+        params["url"] = lt.parse_magnet_uri(link).url
+    else:
+        logging.error("Unsupported URI protocol.")
+        return
 
     handle = ses.add_torrent(params)
     ses.start_dht()
