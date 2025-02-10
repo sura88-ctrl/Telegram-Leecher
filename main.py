@@ -71,7 +71,7 @@ cmd = "apt update && apt install ffmpeg aria2"
 proc = subprocess.run(cmd, shell=True)
 cmd = "pip3 install -r /content/Telegram-Leecher/requirements.txt"
 proc = subprocess.run(cmd, shell=True)
-cmd = "pip3 install -U pyroblack==2.5.0"
+cmd = "pip3 install -U pyrofork"
 proc = subprocess.run(cmd, shell=True)
 
 credentials = {
